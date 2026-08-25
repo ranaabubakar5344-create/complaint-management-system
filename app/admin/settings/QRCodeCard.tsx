@@ -10,6 +10,7 @@ export default function QRCodeCard({
   complaintFormUrl: string;
 }) {
   const [qrCode, setQrCode] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!complaintFormUrl) {
@@ -17,14 +18,24 @@ export default function QRCodeCard({
       return;
     }
 
-    QRCode.toDataURL(complaintFormUrl, {
-      width: 500,
-      margin: 2,
-    })
-      .then(setQrCode)
-      .catch((error) => {
-        console.error("QR Code generation failed:", error);
-      });
+    async function generateQR() {
+      try {
+        setError("");
+
+        const qr = await QRCode.toDataURL(complaintFormUrl, {
+          width: 500,
+          margin: 2,
+          errorCorrectionLevel: "H",
+        });
+
+        setQrCode(qr);
+      } catch (err) {
+        console.error("QR generation error:", err);
+        setError("Unable to generate QR code.");
+      }
+    }
+
+    generateQR();
   }, [complaintFormUrl]);
 
   function downloadQR() {
@@ -33,7 +44,10 @@ export default function QRCodeCard({
     const link = document.createElement("a");
     link.href = qrCode;
     link.download = "complaint-form-qr-code.png";
+
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
   }
 
   return (
@@ -44,7 +58,10 @@ export default function QRCodeCard({
         </div>
 
         <div>
-          <h2 className="font-bold">Complaint Form QR Code</h2>
+          <h2 className="font-bold">
+            Complaint Form QR Code
+          </h2>
+
           <p className="text-sm text-slate-500">
             Scan this QR code to open the complaint form.
           </p>
@@ -53,17 +70,28 @@ export default function QRCodeCard({
 
       {!complaintFormUrl ? (
         <div className="mt-6 rounded-xl bg-amber-50 p-4 text-sm text-amber-700">
-          Add the Complaint Form URL in Settings first.
+          Please save the Complaint Form URL first.
         </div>
       ) : (
         <div className="mt-6">
-          <div className="flex justify-center rounded-2xl border border-slate-200 bg-white p-6">
-            {qrCode && (
+          {error && (
+            <div className="mb-4 rounded-xl bg-red-50 p-4 text-sm text-red-700">
+              {error}
+            </div>
+          )}
+
+          <div className="flex min-h-[300px] items-center justify-center rounded-2xl border border-slate-200 bg-white p-6">
+            {qrCode ? (
               <img
                 src={qrCode}
                 alt="Complaint Form QR Code"
-                className="h-64 w-64"
+                width={260}
+                height={260}
               />
+            ) : (
+              <p className="text-sm text-slate-500">
+                Generating QR Code...
+              </p>
             )}
           </div>
 
