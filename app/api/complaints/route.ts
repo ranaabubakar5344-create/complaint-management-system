@@ -114,17 +114,19 @@ export async function POST(request: Request) {
     });
 
     // Send emails without delaying the success response
-    sendComplaintEmails({
-      userEmail: complaint.email,
-      userName: complaint.fullName,
-      phone: complaint.phone,
-      referenceNo: complaint.referenceNo,
-      subject: complaint.subject,
-      description: complaint.description,
-      isAnonymous: complaint.isAnonymous,
-    }).catch((emailError) => {
-      console.error("Email sending failed:", emailError);
-    });
+    try {
+  await sendComplaintEmails({
+    userEmail: complaint.email,
+    userName: complaint.fullName,
+    phone: complaint.phone,
+    referenceNo: complaint.referenceNo,
+    subject: complaint.subject,
+    description: complaint.description,
+    isAnonymous: complaint.isAnonymous,
+  });
+} catch (emailError) {
+  console.error("Email sending failed:", emailError);
+}
 
     return NextResponse.json(
       {
