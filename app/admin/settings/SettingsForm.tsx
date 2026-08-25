@@ -10,7 +10,7 @@ import {
   Save,
   Shield,
 } from "lucide-react";
-
+import QRCodeCard from "./QRCodeCard";
 type Settings = {
   organizationName: string;
   systemTitle: string;
@@ -250,7 +250,11 @@ export default function SettingsForm({
           />
         </div>
       </section>
-
+<div className="mt-6">
+  <QRCodeCard
+    complaintFormUrl={form.complaintFormUrl}
+  />
+</div>
       <div className="flex justify-end">
         <button
           type="submit"
