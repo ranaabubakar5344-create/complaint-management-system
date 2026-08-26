@@ -125,16 +125,16 @@ export async function POST(request: Request) {
 
     // For debugging, wait for email result
     try {
-      await sendComplaintEmails({
-        userEmail: complaint.email,
-        userName: complaint.fullName,
-        phone: complaint.phone,
-        referenceNo: complaint.referenceNo,
-        subject: complaint.subject,
-        description: complaint.description,
-        isAnonymous: complaint.isAnonymous,
-      });
-
+   await sendComplaintEmails({
+  managerEmail: settings.notificationEmail,
+  userEmail: complaint.email,
+  userName: complaint.fullName,
+  phone: complaint.phone,
+  referenceNo: complaint.referenceNo,
+  subject: complaint.subject,
+  description: complaint.description,
+  isAnonymous: complaint.isAnonymous,
+});
       console.log(
         "EMAIL SUCCESS:",
         complaint.referenceNo
