@@ -15,14 +15,9 @@ const adapter = new PrismaMariaDb({
   user: decodeURIComponent(url.username),
   password: decodeURIComponent(url.password),
   database: url.pathname.replace("/", ""),
-
   connectionLimit: 1,
-
-  // Prisma 7 mariadb adapter default connect timeout is quite short.
   connectTimeout: 10000,
   acquireTimeout: 15000,
-
-  // Aiven requires encrypted MySQL connections.
   ssl: true,
 });
 
