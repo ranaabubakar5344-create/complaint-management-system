@@ -19,16 +19,8 @@ const adapter = new PrismaMariaDb({
   user: decodeURIComponent(url.username),
   password: decodeURIComponent(url.password),
   database: url.pathname.replace("/", ""),
-
-  // Small pool is better for Vercel/serverless
-  connectionLimit: 2,
-
-  // Aiven requires encrypted connection
-  ...(isLocal
-    ? {}
-    : {
-        ssl: true,
-      }),
+  connectionLimit: 1,
+  ssl: true,
 });
 
 const globalForPrisma = globalThis as unknown as {
