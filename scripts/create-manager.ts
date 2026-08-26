@@ -1,6 +1,6 @@
 import "dotenv/config";
 import bcrypt from "bcryptjs";
-import { PrismaMariaDb } from "@prisma/adapter-mariadb";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
 
 const databaseUrl = process.env.DATABASE_URL;
@@ -9,15 +9,8 @@ if (!databaseUrl) {
   throw new Error("DATABASE_URL is not defined");
 }
 
-const url = new URL(databaseUrl);
-
-const adapter = new PrismaMariaDb({
-  host: url.hostname,
-  port: Number(url.port || 3306),
-  user: decodeURIComponent(url.username),
-  password: decodeURIComponent(url.password),
-  database: url.pathname.replace("/", ""),
-  connectionLimit: 5,
+const adapter = new PrismaPg({
+  connectionString: databaseUrl,
 });
 
 const prisma = new PrismaClient({
@@ -45,18 +38,19 @@ async function main() {
   });
 
   console.log("Manager created successfully:");
-  console.log(manager.email);
+  console.log({
+    id: manager.id,
+    name: manager.name,
+    email: manager.email,
+  });
 }
 
 main()
   .catch((error) => {
+    console.error("Manager creation failed:");
     console.error(error);
     process.exit(1);
   })
   .finally(async () => {
     await prisma.$disconnect();
-  })
-
-
-
-  
+  });

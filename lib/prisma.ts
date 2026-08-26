@@ -1,4 +1,4 @@
-import { PrismaMariaDb } from "@prisma/adapter-mariadb";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
 
 const databaseUrl = process.env.DATABASE_URL;
@@ -7,22 +7,8 @@ if (!databaseUrl) {
   throw new Error("DATABASE_URL is not defined");
 }
 
-const url = new URL(databaseUrl);
-
-const adapter = new PrismaMariaDb({
-  host: url.hostname,
-  port: Number(url.port || 3306),
-  user: decodeURIComponent(url.username),
-  password: decodeURIComponent(url.password),
-  database: url.pathname.replace("/", ""),
-
-  connectionLimit: 2,
-  connectTimeout: 15000,
-  acquireTimeout: 20000,
-
-  ssl: {
-    rejectUnauthorized: false,
-  },
+const adapter = new PrismaPg({
+  connectionString: databaseUrl,
 });
 
 const globalForPrisma = globalThis as unknown as {
