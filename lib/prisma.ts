@@ -9,17 +9,20 @@ if (!databaseUrl) {
 
 const url = new URL(databaseUrl);
 
-const isLocal =
-  url.hostname === "localhost" ||
-  url.hostname === "127.0.0.1";
-
 const adapter = new PrismaMariaDb({
   host: url.hostname,
   port: Number(url.port || 3306),
   user: decodeURIComponent(url.username),
   password: decodeURIComponent(url.password),
   database: url.pathname.replace("/", ""),
+
   connectionLimit: 1,
+
+  // Prisma 7 mariadb adapter default connect timeout is quite short.
+  connectTimeout: 10000,
+  acquireTimeout: 15000,
+
+  // Aiven requires encrypted MySQL connections.
   ssl: true,
 });
 
