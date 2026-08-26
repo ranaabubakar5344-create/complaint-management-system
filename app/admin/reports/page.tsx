@@ -10,7 +10,8 @@ import AdminSidebar from "../AdminSidebar";
 import { prisma } from "@/lib/prisma";
 import LogoutButton from "../LogoutButton";
 import ReportsClient from "./ReportsClient";
-
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 export default async function ReportsPage() {
   const complaints = await prisma.complaint.findMany({
     orderBy: {

@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import ComplaintForm from "./ComplaintForm";
-
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 export default async function ComplaintPage() {
   const settings = await prisma.systemSetting.upsert({
     where: {

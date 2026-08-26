@@ -18,6 +18,8 @@ import {
 import AdminSidebar from "../../AdminSidebar";
 import { prisma } from "@/lib/prisma";
 import StatusButtons from "@/app/api/complaints/[id]/StatusButtons";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 type PageProps = {
   params: Promise<{
     id: string;

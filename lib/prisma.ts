@@ -9,13 +9,26 @@ if (!databaseUrl) {
 
 const url = new URL(databaseUrl);
 
+const isLocal =
+  url.hostname === "localhost" ||
+  url.hostname === "127.0.0.1";
+
 const adapter = new PrismaMariaDb({
   host: url.hostname,
   port: Number(url.port || 3306),
   user: decodeURIComponent(url.username),
   password: decodeURIComponent(url.password),
   database: url.pathname.replace("/", ""),
-  connectionLimit: 5,
+
+  // Small pool is better for Vercel/serverless
+  connectionLimit: 2,
+
+  // Aiven requires encrypted connection
+  ...(isLocal
+    ? {}
+    : {
+        ssl: true,
+      }),
 });
 
 const globalForPrisma = globalThis as unknown as {

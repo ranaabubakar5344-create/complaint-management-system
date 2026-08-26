@@ -19,7 +19,8 @@ import { prisma } from "@/lib/prisma";
 import ComplaintsTable from "./ComplaintsTable";
 import AdminSidebar from "./AdminSidebar";
 import LogoutButton from "./LogoutButton";
-
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
     NEW: "bg-blue-50 text-blue-700 ring-blue-100",

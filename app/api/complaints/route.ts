@@ -26,7 +26,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // Load current system settings
+    // Current settings
     const settings = await prisma.systemSetting.upsert({
       where: {
         id: 1,
@@ -37,7 +37,6 @@ export async function POST(request: Request) {
       },
     });
 
-    // Anonymous submissions can be disabled from Settings
     if (isAnonymous && !settings.allowAnonymous) {
       return NextResponse.json(
         {
@@ -48,7 +47,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Identified complaint requires name + email
     if (!isAnonymous && (!fullName?.trim() || !email?.trim())) {
       return NextResponse.json(
         {
@@ -59,7 +57,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Phone can be made mandatory from Settings
     if (
       !isAnonymous &&
       settings.requirePhone &&
@@ -76,7 +73,7 @@ export async function POST(request: Request) {
 
     const currentYear = new Date().getFullYear();
 
-    // Generate reference + save complaint in one DB transaction
+    // Reference + complaint creation
     const complaint = await prisma.$transaction(async (tx) => {
       const counter = await tx.complaintCounter.upsert({
         where: {
@@ -113,20 +110,42 @@ export async function POST(request: Request) {
       });
     });
 
-    // Send emails without delaying the success response
+    // DEBUG: verify Vercel env variables exist
+    console.log("EMAIL CONFIG CHECK", {
+      referenceNo: complaint.referenceNo,
+      smtpHost: process.env.SMTP_HOST,
+      smtpPort: process.env.SMTP_PORT,
+      smtpSecure: process.env.SMTP_SECURE,
+      smtpUserSet: Boolean(process.env.SMTP_USER),
+      smtpPassSet: Boolean(process.env.SMTP_PASS),
+      smtpFromSet: Boolean(process.env.SMTP_FROM),
+      managerEmailSet: Boolean(process.env.MANAGER_EMAIL),
+      userEmail: complaint.email,
+    });
+
+    // For debugging, wait for email result
     try {
-  await sendComplaintEmails({
-    userEmail: complaint.email,
-    userName: complaint.fullName,
-    phone: complaint.phone,
-    referenceNo: complaint.referenceNo,
-    subject: complaint.subject,
-    description: complaint.description,
-    isAnonymous: complaint.isAnonymous,
-  });
-} catch (emailError) {
-  console.error("Email sending failed:", emailError);
-}
+      await sendComplaintEmails({
+        userEmail: complaint.email,
+        userName: complaint.fullName,
+        phone: complaint.phone,
+        referenceNo: complaint.referenceNo,
+        subject: complaint.subject,
+        description: complaint.description,
+        isAnonymous: complaint.isAnonymous,
+      });
+
+      console.log(
+        "EMAIL SUCCESS:",
+        complaint.referenceNo
+      );
+    } catch (emailError) {
+      console.error(
+        "EMAIL FAILED:",
+        complaint.referenceNo,
+        emailError
+      );
+    }
 
     return NextResponse.json(
       {
