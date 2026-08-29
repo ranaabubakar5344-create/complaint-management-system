@@ -14,7 +14,7 @@ model Complaint {
   email       String?
   phone       String?
   subject     String
-  description String   @db.Text
+  description String
   status      String   @default("NEW")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

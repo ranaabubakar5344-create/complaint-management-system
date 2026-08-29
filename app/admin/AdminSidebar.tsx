@@ -37,23 +37,25 @@ export default function AdminSidebar() {
   }
 
   return (
-    <aside className="hidden min-h-screen w-[270px] shrink-0 flex-col bg-[#0b1d3a] text-white lg:flex">
-      {/* LOGO */}
-      <div className="flex h-20 items-center gap-3 border-b border-white/10 px-7">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600">
-          <ShieldCheck size={23} />
-        </div>
+<aside className="hidden w-[270px] shrink-0 flex-col bg-[#143b66] text-white lg:flex">      {/* LOGO */}
+  {/* SIDEBAR HEADER */}
+{/* SIDEBAR HEADER */}
+<div className="border-b border-white/10 px-5 py-5">
 
-        <div>
-          <p className="font-bold">
-            Complaint
-          </p>
+  {/* LOGO WITH WHITE BACKGROUND */}
+  <div className="flex w-full items-center justify-center rounded-xl bg-white px-3 py-3">
+    <img
+      src="/logo.png"
+      alt="FTSC Abu Dhabi"
+      className="h-auto w-full max-w-[190px] object-contain"
+    />
+  </div>
 
-          <p className="text-xs text-slate-400">
-            Management System
-          </p>
-        </div>
-      </div>
+  <p className="mt-3 text-xs font-medium text-slate-400">
+    Complaints & Suggestions
+  </p>
+
+</div>
 
       {/* NAVIGATION */}
       <nav className="space-y-2 px-4 py-7">
@@ -71,6 +73,9 @@ export default function AdminSidebar() {
         >
           <MessageSquareWarning size={19} />
           Complaints
+
+
+          
         </Link>
 
         <Link

@@ -2,6 +2,7 @@ import "dotenv/config";
 import bcrypt from "bcryptjs";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
+import { LogIn } from "lucide-react";
 
 const databaseUrl = process.env.DATABASE_URL;
 
@@ -54,3 +55,11 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+   
+  try {
+    console.log(LogIn);
+  } catch (error) {
+     console.error(" unable to login ");
+  }
+
+
