@@ -1,9 +1,6 @@
-// import { redirect } from "next/navigation";
-
-// export default function HomePage() {
-//   redirect("/manager/login");
-// }
 import {redirect} from "next/navigation";
+
+
 
 export default function HomePage(){
   redirect("/manager/login");
